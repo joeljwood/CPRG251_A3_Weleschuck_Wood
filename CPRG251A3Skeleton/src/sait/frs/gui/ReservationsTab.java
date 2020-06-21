@@ -132,7 +132,7 @@ public class ReservationsTab extends TabBase {
 		gbc.gridy = 2;
 		panel.add(nameSearchText,gbc);
 		
-		//github test
+		//github test1
 		return panel;
 	}
 	
