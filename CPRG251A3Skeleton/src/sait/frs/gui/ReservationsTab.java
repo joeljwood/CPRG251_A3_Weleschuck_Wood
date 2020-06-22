@@ -73,7 +73,7 @@ public class ReservationsTab extends TabBase {
 		return panel;
 	}
 
-	JPanel createSouthNorthPanel() {
+	private JPanel createSouthNorthPanel() {
 		JPanel panel = new JPanel();
 		JLabel searchLabel = new JLabel("Search", SwingConstants.CENTER);
 		searchLabel.setFont(new Font("serif", Font.PLAIN, 25));
