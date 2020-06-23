@@ -2,8 +2,9 @@ package sait.frs.gui;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.*;
-
+import javax.swing.text.JTextComponent;
 
 import sait.frs.manager.Manager;
 import sait.frs.problemdomain.Flight;
@@ -116,9 +117,12 @@ public class FlightsTab extends TabBase
 	 */
 	private JPanel createCenterWestPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		JTextArea textInput = new JTextArea(15, 20);
-		
+		panel.setLayout(new BorderLayout(8,8));
+		JTextArea textInput = new JTextArea(15, 30);
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		textInput.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		textInput.setLineWrap(true);
+		panel.add(new JScrollPane(textInput));
 		panel.add(textInput);
 		
 		return panel;
@@ -163,98 +167,106 @@ public class FlightsTab extends TabBase
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(1, 8, 1, 8);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
-		this.flightLabel = new JLabel("Flight: ");
-		this.flightLabel.setHorizontalAlignment(JLabel.RIGHT);
+		flightLabel = new JLabel("Flight: ");
+		flightLabel.setFont(new Font("serif", Font.PLAIN, 12));
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel.add(this.flightLabel, gbc);
+        panel.add(flightLabel, gbc);
         
-		this.flightSearch = new JTextField();
+		flightSearch = new JTextField(25);
+		flightLabel.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        panel.add(this.flightSearch, gbc);
+        panel.add(flightSearch, gbc);
         
-        this.airlineLable = new JLabel("Airline: ");
-        this.airlineLable.setHorizontalAlignment(JLabel.RIGHT);
+        airlineLable = new JLabel("Airline: ");
+        airlineLable.setFont(new Font("serif", Font.PLAIN, 12));
+        airlineLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panel.add(this.airlineLable, gbc);
+        panel.add(airlineLable, gbc);
         
-        this.airlineSearch = new JTextField();
+        airlineSearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 1;
-        panel.add(this.airlineSearch, gbc);
+        panel.add(airlineSearch, gbc);
         
-        this.dayLable = new JLabel("Day: ");
-        this.dayLable.setHorizontalAlignment(JLabel.RIGHT);
+        dayLable = new JLabel("Day: ");
+        dayLable.setFont(new Font("serif", Font.PLAIN, 12));
+        dayLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panel.add(this.dayLable, gbc);
+        panel.add(dayLable, gbc);
         
-        this.daySearch = new JTextField();
+        daySearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(this.daySearch, gbc);
+        panel.add(daySearch, gbc);
         
-        this.timeLable = new JLabel("Time: ");
-        this.timeLable.setHorizontalAlignment(JLabel.RIGHT);
+        timeLable = new JLabel("Time: ");
+        timeLable.setFont(new Font("serif", Font.PLAIN, 12));
+        timeLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 3;
-        panel.add(this.timeLable, gbc);
+        panel.add(timeLable, gbc);
         
-        this.timeSearch = new JTextField();
+        timeSearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 3;
-        panel.add(this.timeSearch, gbc);
+        panel.add(timeSearch, gbc);
         
-        this.costLable = new JLabel("Cost: ");
-        this.costLable.setHorizontalAlignment(JLabel.RIGHT);
+        costLable = new JLabel("Cost: ");
+        costLable.setFont(new Font("serif", Font.PLAIN, 12));
+        costLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 4;
         panel.add(this.costLable, gbc);
         
-        this.costSearch = new JTextField();
+        costSearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 4;
-        panel.add(this.costSearch, gbc);
+        panel.add(costSearch, gbc);
         
-        this.nameLable = new JLabel("Name: ");
-        this.nameLable.setHorizontalAlignment(JLabel.RIGHT);
+        nameLable = new JLabel("Name: ");
+        nameLable.setFont(new Font("serif", Font.PLAIN, 12));
+        nameLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 5;
-        panel.add(this.nameLable, gbc);
+        panel.add(nameLable, gbc);
         
-        this.nameSearch = new JTextField();
+        nameSearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 5;
-        panel.add(this.nameSearch, gbc);
+        panel.add(nameSearch, gbc);
 		
-        this.citizenshipLable = new JLabel("Name: ");
-        this.citizenshipLable.setHorizontalAlignment(JLabel.RIGHT);
+        citizenshipLable = new JLabel("Citezenship: ");
+        citizenshipLable.setFont(new Font("serif", Font.PLAIN, 12));
+        citizenshipLable.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 6;
-        panel.add(this.citizenshipLable, gbc);
+        panel.add(citizenshipLable, gbc);
         
-        this.citizenshipSearch = new JTextField();
+        citizenshipSearch = new JTextField(25);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 6;
-        panel.add(this.citizenshipSearch, gbc);
+        panel.add(citizenshipSearch, gbc);
         
 		return panel;
 	}
@@ -264,9 +276,8 @@ public class FlightsTab extends TabBase
 	 */
 	private JPanel createCenterEastSouth() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		JButton reserveButton = new JButton("Find Reservations");
-		panel.add(reserveButton);
+		JButton reserveButton = new JButton("Reserve");
+		panel.add(reserveButton, BorderLayout.CENTER);
 		return panel;
 	}
 	/**
@@ -360,7 +371,7 @@ public class FlightsTab extends TabBase
 	private JPanel createSouthSouthPanel() {
 		JPanel SouthSouthPanel = new JPanel();
 		SouthSouthPanel.setLayout(new BorderLayout());
-		JButton findFlightsButton = new JButton("Find Reservations");
+		JButton findFlightsButton = new JButton("Find Flights");
 		SouthSouthPanel.add(findFlightsButton);
 		return SouthSouthPanel;
 	}
