@@ -3,12 +3,15 @@ package sait.frs.gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import sait.frs.manager.Manager;
+import sait.frs.problemdomain.Flight;
+import sait.frs.problemdomain.Reservation;
 
 /**
  * Holds the components for the reservations tab.
@@ -30,6 +33,9 @@ public class ReservationsTab extends TabBase {
 	private JTextField airlineSearchText;
 	private JTextField nameSearchText;
 	private JButton findResButton;
+	
+	private DefaultListModel<Reservation> reservationsModel;
+	
 	/**
 	 * Instance of travel manager.
 	 */
@@ -315,11 +321,17 @@ public class ReservationsTab extends TabBase {
 	private class ButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stubcode
-			//SearchText,airlineSearchText,nameSearchText
+			
+			//codeSearchText,airlineSearchText,nameSearchText
 			//reserveTextArea
 			if (e.getSource()== findResButton) {
+			    for (Reservation reservation : manager.findReservations(
+			    		codeSearchText.getText(),airlineSearchText.getText(),nameSearchText.getText())) {
+			                    reservationsModel.addElement(reservation);
+			                }//test for github push
+
 				
+
 			}
 		}
 	}
