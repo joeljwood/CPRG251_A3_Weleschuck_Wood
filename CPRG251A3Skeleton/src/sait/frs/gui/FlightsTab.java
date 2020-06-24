@@ -1,11 +1,14 @@
 package sait.frs.gui;
 
 import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.*;
-import javax.swing.text.JTextComponent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import sait.frs.*;
 import sait.frs.manager.Manager;
 import sait.frs.problemdomain.Flight;
 
@@ -47,6 +50,7 @@ public class FlightsTab extends TabBase
 	private JComboBox toBox;
 	private JLabel dayLabel;
 	private JComboBox dayBox;
+	private JButton findFlightsButton;
 	
 	/**
 	 * Creates the components for flights tab.
@@ -100,7 +104,7 @@ public class FlightsTab extends TabBase
 		// Wrap JList in JScrollPane so it is scrollable.
 		//JScrollPane scrollPane = new JScrollPane(this.flightsList);
 		
-		//flightsList.addListSelectionListener(new MyListSelectionListener());
+		//flightsList.addListSelectionListener(new ListSelectionListener());
 		
 		//panel.add(scrollPane);
 		
@@ -116,6 +120,11 @@ public class FlightsTab extends TabBase
 	 * @return JPanel that is the west panel of the greater Center panel
 	 */
 	private JPanel createCenterWestPanel() {
+		flightsModel = new DefaultListModel<>();
+		flightsList = new JList<>(flightsModel);
+		flightsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(this.flightsList);
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout(8,8));
 		JTextArea textInput = new JTextArea(15, 30);
@@ -316,49 +325,55 @@ public class FlightsTab extends TabBase
 	 * @return JPanel that is the Center panel of the greater South panel
 	 */
 	private JPanel createSouthCenterPanel() {
+		//build airport codes
+		String[] airportCodes = new String[this.manager.getAirports().size()];
+		manager.getAirports().toArray(airportCodes);
+		String[] daysOfWeek = {this.manager.WEEKDAY_ANY, this.manager.WEEKDAY_MONDAY, this.manager.WEEKDAY_TUESDAY,this.manager.WEEKDAY_WEDNESDAY, 
+				this.manager.WEEKDAY_THURSDAY, this.manager.WEEKDAY_FRIDAY, this.manager.WEEKDAY_SATURDAY, this.manager.WEEKDAY_SUNDAY};
+		
 		JPanel southCenterPanel = new JPanel();
 		southCenterPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
-		this.fromLabel = new JLabel("From: ");
-		this.fromLabel.setHorizontalAlignment(JLabel.RIGHT);
+		fromLabel = new JLabel("From: ");
+		fromLabel.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        southCenterPanel.add(this.fromLabel, gbc);
+        southCenterPanel.add(fromLabel, gbc);
         
-		this.fromBox = new JComboBox();
+		fromBox = new JComboBox(airportCodes);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        southCenterPanel.add(this.fromBox, gbc);
+        southCenterPanel.add(fromBox, gbc);
         
-        this.toLabel = new JLabel("To: ");
-		this.toLabel.setHorizontalAlignment(JLabel.RIGHT);
+       toLabel = new JLabel("To: ");
+		toLabel.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        southCenterPanel.add(this.toLabel, gbc);
+        southCenterPanel.add(toLabel, gbc);
         
-		this.toBox = new JComboBox();
+		toBox = new JComboBox(airportCodes);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 1;
         southCenterPanel.add(this.toBox, gbc);
         
-        this.dayLabel = new JLabel("Day: ");
-		this.dayLabel.setHorizontalAlignment(JLabel.RIGHT);
+        dayLabel = new JLabel("Day: ");
+		dayLabel.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 2;
-        southCenterPanel.add(this.dayLabel, gbc);
+        southCenterPanel.add(dayLabel, gbc);
         
-		this.dayBox = new JComboBox();
+		dayBox = new JComboBox(daysOfWeek);
 		gbc.weightx = 1;
         gbc.gridx = 1;
         gbc.gridy = 2;
-        southCenterPanel.add(this.dayBox, gbc);
+        southCenterPanel.add(dayBox, gbc);
 		
 		
 		return southCenterPanel;
@@ -372,19 +387,45 @@ public class FlightsTab extends TabBase
 		JPanel SouthSouthPanel = new JPanel();
 		SouthSouthPanel.setLayout(new BorderLayout());
 		JButton findFlightsButton = new JButton("Find Flights");
+		findFlightsButton.addActionListener(new ButtonListener());
 		SouthSouthPanel.add(findFlightsButton);
 		return SouthSouthPanel;
+	}
+	private class ButtonListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e)
+		{
+		
+		 //Get the action command.
+		
+		 if (e.getSource() == (findFlightsButton))
+		 {
+		 String from = (String) fromBox.getSelectedItem();
+		 String to = (String) toBox.getSelectedItem();
+		 String weekday = (String) dayBox.getSelectedItem();
+		 flightsModel.clear();
+		 
+		 for (Flight flight: manager.findFlights(from, to, weekday)){
+			 flightsModel.addElement(flight);
+		 }
+		 }
+		}
 	}
 	
 	private class MyListSelectionListener implements ListSelectionListener 
 	{
+		public void MyListSelectionListener(){
+			
+		}
 		/**
 		 * Called when user selects an item in the JList.
 		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			
+			
 		}
 		
 	}
 }
+

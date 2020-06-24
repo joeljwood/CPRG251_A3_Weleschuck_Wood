@@ -263,6 +263,7 @@ public class ReservationsTab extends TabBase {
 	}
 
 	private JPanel createSouthCenterPanel() {
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
