@@ -8,18 +8,27 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import sait.frs.exception.InvalidCitizenshipException;
+import sait.frs.exception.InvalidNameException;
+import sait.frs.exception.NoMoreSeatsException;
+import sait.frs.exception.NullFlightException;
 import sait.frs.manager.Manager;
 import sait.frs.problemdomain.Flight;
 import sait.frs.problemdomain.Reservation;
 
 /**
+ * @author Zennon and Joel
  * Holds the components for the reservations tab.
  * 
  */
 public class ReservationsTab extends TabBase {
+	/**
+	 * field for ReservationsTab
+	 */
 	private JTextArea reserveTextArea;
-	
 	private JTextField codeReserveText;
 	private JTextField flightReserveText;
 	private JTextField AirlineReserveText;
@@ -28,14 +37,14 @@ public class ReservationsTab extends TabBase {
 	private JTextField citizenReserveText;
 	private JComboBox statusReserveComboBox;
 	private JButton updateButton;
-	
+
 	private JTextField codeSearchText;
 	private JTextField airlineSearchText;
 	private JTextField nameSearchText;
 	private JButton findResButton;
-	
+
 	private DefaultListModel<Reservation> reservationsModel;
-	
+	private JList<Reservation> reservationList;
 	/**
 	 * Instance of travel manager.
 	 */
@@ -73,7 +82,10 @@ public class ReservationsTab extends TabBase {
 
 		return panel;
 	}
-
+	/**
+	 * creates center panel
+	 * @return JPanel that goes in center
+	 */
 	private JPanel createCenterPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -86,20 +98,75 @@ public class ReservationsTab extends TabBase {
 
 		return panel;
 	}
-
+	/**
+	 * creates cente west panel
+	 * @return JPanel that goes in the center west
+	 */
 	private JPanel createWestPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout(8, 8));
-		reserveTextArea = new JTextArea(15, 30);
-		Border border = BorderFactory.createLineBorder(Color.BLACK);
-		reserveTextArea
-				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		reserveTextArea.setLineWrap(true);
+		reservationsModel = new DefaultListModel<>();
+		reservationList = new JList<>(reservationsModel);
+
+		JScrollPane reserveTextArea = new JScrollPane(this.reservationList);
+
+		reservationList.addListSelectionListener(new MyListSelectionListerner());
 		panel.add(reserveTextArea);
 		panel.add(new JScrollPane(reserveTextArea));
 		return panel;
 	}
+	/**
+	 * listener for loading infomation to be displayed in fields
+	 * @author Zennon and Joel
+	 *
+	 */
+	public class MyListSelectionListerner implements ListSelectionListener {
 
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			returnText();
+
+		}
+		
+		/**
+		 * method for displaying information in fields
+		 */
+		private void returnText() {
+			String codeText = "";
+			String flightText = "";
+			String airlineText = "";
+			String costText = "";
+			String nameText = "";
+			String citizenText = "";
+			
+			codeText = reservationList.getSelectedValue().getCode();
+			flightText = reservationList.getSelectedValue().getFlight().getCode();
+			airlineText = reservationList.getSelectedValue().getFlight().getAirline();
+			costText = Double.toString(reservationList.getSelectedValue().getFlight().getCostPerSeat());
+			nameText = reservationList.getSelectedValue().getName();
+			citizenText = reservationList.getSelectedValue().getCitizenship();
+			boolean activeStatus = reservationList.getSelectedValue().isActive();
+			
+			codeReserveText.setText(codeText);
+			flightReserveText.setText(flightText);
+			AirlineReserveText.setText(airlineText);
+			costReserveText.setText(costText);
+			nameReserveText.setText(nameText);
+			citizenReserveText.setText(citizenText);
+			
+			if (activeStatus == true) {
+				statusReserveComboBox.setSelectedItem("active");
+			}else {
+				statusReserveComboBox.setSelectedItem("inactive");
+			}
+			
+		}
+
+	}
+	/**
+	 * creates JPanel for the center east panel
+	 * @return JPanel for center east section
+	 */
 	private JPanel createEastPanel() {// main panel for east portion
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -115,7 +182,10 @@ public class ReservationsTab extends TabBase {
 
 		return panel;
 	}
-
+	/**
+	 * creates the north section within the east center panel
+	 * @return JPanel for the north portion of the east section
+	 */
 	private JPanel createEastNorthPanel() {// main panel for east portion
 		JPanel panel = new JPanel();
 		JLabel reserveLabel = new JLabel("Reserve", SwingConstants.CENTER);
@@ -123,7 +193,10 @@ public class ReservationsTab extends TabBase {
 		panel.add(reserveLabel);
 		return panel;
 	}
-
+	/**
+	 * creates the central section for the east panel 
+	 * @return JPanel for central section of the east panel
+	 */
 	private JPanel createEastCenterPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -229,17 +302,25 @@ public class ReservationsTab extends TabBase {
 		return panel;
 
 	}
-
+	/**
+	 * creates  the south section for the east panel
+	 * @return JPanel for the south sectio of the east panel
+	 */
 	private JPanel createEastSouthPanel() {
 		JPanel panel = new JPanel();
 		updateButton = new JButton("Update");
+		updateButton.addActionListener(new ButtonListener());
 		panel.add(updateButton, BorderLayout.CENTER);
 		return panel;
 	}
 
-	private JPanel createSouthPanel() {// main panel for south portion
+	/**
+	 * creates the south panel 
+	 * @return JPanel for the south section 
+	 */
+	private JPanel createSouthPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());// resets for a new subpanels
+		panel.setLayout(new BorderLayout());
 		JPanel southNorthPanel = createSouthNorthPanel();
 		panel.add(southNorthPanel, BorderLayout.NORTH);
 
@@ -250,7 +331,10 @@ public class ReservationsTab extends TabBase {
 		panel.add(southSouthPanel, BorderLayout.SOUTH);
 		return panel;
 	}
-
+	/**
+	 * creates the north section of the south panel 
+	 * @return  JPanel for the north section of the south panel
+	 */
 	private JPanel createSouthNorthPanel() {
 		JPanel panel = new JPanel();
 		JLabel searchLabel = new JLabel("Search", SwingConstants.CENTER);
@@ -258,7 +342,10 @@ public class ReservationsTab extends TabBase {
 		panel.add(searchLabel);
 		return panel;
 	}
-
+	/**
+	 * creates the south section for the  south panel
+	 * @return JPanel for the south section of the south panel
+	 */
 	private JPanel createSouthSouthPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -267,9 +354,11 @@ public class ReservationsTab extends TabBase {
 		panel.add(findResButton);
 		return panel;
 	}
-
+	/**
+	 * creates the central section for the south panel
+	 * @return JPanel for the central section of the south panel
+	 */
 	private JPanel createSouthCenterPanel() {
-		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -295,21 +384,18 @@ public class ReservationsTab extends TabBase {
 		panel.add(NameSearchLabel, gbc);
 
 		codeSearchText = new JTextField(50);
-		codeSearchText.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		panel.add(codeSearchText, gbc);
 
 		airlineSearchText = new JTextField(50);
-		airlineSearchText.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		panel.add(airlineSearchText, gbc);
 
 		nameSearchText = new JTextField(50);
-		nameSearchText.setHorizontalAlignment(JLabel.RIGHT);
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
@@ -317,22 +403,51 @@ public class ReservationsTab extends TabBase {
 
 		return panel;
 	}
-
+	/**
+	 * Listener for the buttons for the reservation tab
+	 * @author Zennon and Joel
+	 *
+	 */
 	private class ButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
-			//codeSearchText,airlineSearchText,nameSearchText
-			//reserveTextArea
-			if (e.getSource()== findResButton) {
-			    for (Reservation reservation : manager.findReservations(
-			    		codeSearchText.getText(),airlineSearchText.getText(),nameSearchText.getText())) {
-			                    reservationsModel.addElement(reservation);
-			                }//test for github push
 
-				
+			// codeSearchText,airlineSearchText,nameSearchText
+			// reserveTextArea
+			if (e.getSource() == findResButton) {
+				for (Reservation reservation : manager.findReservations(codeSearchText.getText(),
+						airlineSearchText.getText(), nameSearchText.getText())) {
+					reservationsModel.addElement(reservation);
+				}
 
 			}
+			if (e.getSource() == updateButton) {
+				Reservation reservation = reservationList.getSelectedValue();
+				try {
+					reservation.setName(nameReserveText.getText());
+				} catch (InvalidNameException e1) {
+					System.out.println(e1.getMessage());
+					e1.printStackTrace();
+				}
+				try {
+					reservation.setCitizenship(citizenReserveText.getText());
+				} catch (InvalidCitizenshipException e1) {
+					System.out.println(e1.getMessage());
+					e1.printStackTrace();
+				}
+				String status = (String) statusReserveComboBox.getSelectedItem();
+				if (status.equals("active")) {
+					reservation.setActive(true);
+					JOptionPane.showMessageDialog(null, "Reservation updated, name: " 
+							+ reservation.getName() + "   Citizenship: " + reservation.getCitizenship() + "   Status: active");
+				}else {
+					reservation.setActive(false);
+					JOptionPane.showMessageDialog(null, "Reservation updated, name: " 
+							+ reservation.getName() + "   Citizenship: " + reservation.getCitizenship() + "   Status: inactive");
+					}
+				manager.persist();
+			}
 		}
+
 	}
 }
